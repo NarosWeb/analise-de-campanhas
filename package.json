@@ -1,17 +1,15 @@
 {
   "name": "botwhatsappai",
   "version": "1.0.0",
+  "description": "Bot WhatsApp com Baileys",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Naros Web",
+  "license": "MIT",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.6.0",
-    "baileys": "^6.7.16",
     "qrcode-terminal": "^0.12.0"
   }
 }
