@@ -1,15 +1,14 @@
 {
-  "name": "botwhatsappai",
+  "name": "analise-de-campanhas",
   "version": "1.0.0",
-  "description": "Bot WhatsApp com Baileys",
+  "description": "Bot do WhatsApp com análise automática",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "author": "Naros Web",
-  "license": "MIT",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.6.0",
-    "qrcode-terminal": "^0.12.0"
+    "pino": "^8.0.0",
+    "qrcode-terminal": "^0.12.0",
+    "@whiskeysockets/baileys": "^6.6.0"
   }
 }
