@@ -47,7 +47,7 @@ async function iniciarBot() {
 
   sock.ev.on('creds.update', saveCreds);
 
-  const numeroAutorizado = "5516999999999@s.whatsapp.net"; // substitua pelo número autorizado
+  const numeroAutorizado = "5516991645537@s.whatsapp.net"; // substitua pelo número autorizado
 
 sock.ev.on("messages.upsert", async ({ messages, type }) => {
   if (type !== "notify") return;
