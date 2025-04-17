@@ -8,9 +8,11 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
+// Inicializa a IA Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
+// Função para gerar resposta da IA
 async function gerarRespostaIA(mensagem) {
   try {
     const chat = model.startChat();
@@ -23,6 +25,7 @@ async function gerarRespostaIA(mensagem) {
   }
 }
 
+// Normaliza nomes para padronização de arquivos
 function normalizarTexto(texto) {
   return texto
     .toLowerCase()
@@ -31,9 +34,9 @@ function normalizarTexto(texto) {
     .replace(/[\s\-]/g, "_");
 }
 
+// Inicia o bot
 async function iniciarBot() {
   const { state, saveCreds } = await useMultiFileAuthState('auth_info');
-
   const sock = makeWASocket({
     printQRInTerminal: true,
     auth: state,
@@ -44,9 +47,7 @@ async function iniciarBot() {
     if (connection === 'close') {
       const motivo = lastDisconnect?.error?.output?.statusCode;
       console.log(`❌ Conexão encerrada. Reconectar?`, motivo !== DisconnectReason.loggedOut);
-      if (motivo !== DisconnectReason.loggedOut) {
-        iniciarBot();
-      }
+      if (motivo !== DisconnectReason.loggedOut) iniciarBot();
     } else if (connection === 'open') {
       console.log('✅ Bot do WhatsApp conectado com sucesso!');
     }
@@ -54,6 +55,7 @@ async function iniciarBot() {
 
   sock.ev.on('creds.update', saveCreds);
 
+  // ✅ Número autorizado a receber relatórios
   const numeroAutorizado = "5516991645537@s.whatsapp.net";
 
   sock.ev.on("messages.upsert", async ({ messages, type }) => {
@@ -68,18 +70,35 @@ async function iniciarBot() {
 
       if (!texto) return;
 
-      const nomeRelatorio = normalizarTexto(texto);
-      const caminho = path.resolve(__dirname, "mensagens_analise", `relatório_de_${nomeRelatorio}_marco.pdf`);
-      const existeRelatorio = fs.existsSync(caminho);
+      const nomeNormalizado = normalizarTexto(texto);
+      const pasta = path.resolve(__dirname, "mensagens_analise");
+      const caminhoPDF = path.join(pasta, `relatório_de_${nomeNormalizado}_marco.pdf`);
+      const caminhoTXT = path.join(pasta, `relatório_de_${nomeNormalizado}_marco.txt`);
 
-      if (numero === numeroAutorizado && existeRelatorio) {
+      const existePDF = fs.existsSync(caminhoPDF);
+      const existeTXT = fs.existsSync(caminhoTXT);
+
+      // Se for o número autorizado e houver relatório
+      if (numero === numeroAutorizado && existePDF) {
+        // Envia análise em texto, se existir
+        if (existeTXT) {
+          const textoAnalise = fs.readFileSync(caminhoTXT, "utf8");
+          await sock.sendMessage(numero, {
+            text: `🧠 *Análise do Relatório:*\n\n${textoAnalise}`,
+          });
+        }
+
+        // Envia o PDF do relatório
         await sock.sendMessage(numero, {
-          document: fs.readFileSync(caminho),
-          fileName: `relatório_de_${nomeRelatorio}_marco.pdf`,
-          mimetype: 'application/pdf'
+          document: fs.readFileSync(caminhoPDF),
+          fileName: path.basename(caminhoPDF),
+          mimetype: "application/pdf",
+          caption: "📊 Aqui está o relatório solicitado!",
         });
-        console.log(`📤 Relatório enviado para ${numero}`);
+
+        console.log(`📤 Relatório e análise enviados para ${numero}`);
       } else {
+        // Outros números recebem apenas a IA
         const resposta = await gerarRespostaIA(texto);
         await sock.sendMessage(numero, { text: resposta });
         console.log(`💬 Resposta da IA enviada para: ${texto}`);
@@ -88,5 +107,4 @@ async function iniciarBot() {
   });
 }
 
-// ✅ Chamada no final do script
 iniciarBot();
