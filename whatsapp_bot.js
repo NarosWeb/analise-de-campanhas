@@ -47,23 +47,40 @@ async function iniciarBot() {
 
   sock.ev.on('creds.update', saveCreds);
 
-  sock.ev.on('messages.upsert', async ({ messages, type }) => {
-    if (type !== 'notify') return;
+  const numeroAutorizado = "5516999999999@s.whatsapp.net"; // substitua pelo número autorizado
 
-    for (const msg of messages) {
-      if (!msg.message || msg.key.fromMe) return;
+sock.ev.on("messages.upsert", async ({ messages, type }) => {
+  if (type !== "notify") return;
 
-      const texto = msg.message.conversation || msg.message.extendedTextMessage?.text;
-      const numero = msg.key.remoteJid;
-      console.log(`📩 Mensagem recebida de ${numero}:`, texto);
+  for (const msg of messages) {
+    if (!msg.message || msg.key.fromMe) return;
 
-      if (texto) {
-        const resposta = await gerarRespostaIA(texto);
-        await sock.sendMessage(numero, { text: resposta });
-        console.log(`💬 Resposta da IA enviada para: ${texto}`);
-      }
+    const texto = msg.message.conversation || msg.message.extendedTextMessage?.text;
+    const numero = msg.key.remoteJid;
+    console.log(`📩 Mensagem recebida de ${numero}:`, texto);
+
+    if (!texto) return;
+
+    const nomeRelatorio = texto.toLowerCase().replace(/ /g, "_");
+    const caminho = path.resolve(__dirname, "mensagens_analise", `relatório_de_${nomeRelatorio}_marco.pdf`);
+
+    const existeRelatorio = fs.existsSync(caminho);
+
+    // 🔐 Verificação de número autorizado
+    if (numero === numeroAutorizado && existeRelatorio) {
+      await sock.sendMessage(numero, {
+        document: fs.readFileSync(caminho),
+        fileName: `relatório_de_${nomeRelatorio}_marco.pdf`,
+        mimetype: 'application/pdf'
+      });
+      console.log(`📤 Relatório enviado para ${numero}`);
+    } else {
+      const resposta = await gerarRespostaIA(texto);
+      await sock.sendMessage(numero, { text: resposta });
+      console.log(`💬 Resposta da IA enviada para: ${texto}`);
     }
-  });
-}
+  }
+});
+
 
 iniciarBot();
