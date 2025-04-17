@@ -1,0 +1,13 @@
+📢 Relatório de Desempenho - {{nome_conta}}
+📅 Período: {{inicio}} a {{fim}}
+
+💰 Investimento Total: R$ {{spend}}
+📢 Impressões: {{impressions}}
+🖱️ Cliques: {{clicks}}
+💸 CPC Médio: R$ {{cpc}}
+📈 CTR: {{ctr}}%
+
+🎯 Ações:
+{{acoes}}
+
+🔍 ROAS (Retorno sobre o investimento): {{roas}}

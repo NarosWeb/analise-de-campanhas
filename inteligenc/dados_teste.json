@@ -1,0 +1,17 @@
+[
+  {
+    "account_name": "Mood Store",
+    "spend": 1892.32,
+    "impressions": 85039,
+    "clicks": 7129,
+    "cpc": 0.26,
+    "ctr": 3.38,
+    "roas": 3.6,
+    "saldo_restante": 90.00,
+    "melhor_anuncio": "Verão Premium Azul",
+    "idade_compradores": [25, 34, 35, 44, 25, 34, 18, 24],
+    "cidades_top": ["São Paulo", "Rio de Janeiro", "Curitiba"],
+    "plataforma_destaque": "Instagram",
+    "genero": "feminino"
+  }
+]

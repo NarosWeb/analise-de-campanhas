@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\BotWhatsappAI\enviar_mensagens_whatsapp.py", line 20, in <module>
+    cron.write()
+    ~~~~~~~~~~^^
+  File "C:\Users\produ\AppData\Local\Programs\Python\Python313\Lib\site-packages\crontab.py", line 398, in write
+    raise IOError("Please specify user or filename to write.")
+OSError: Please specify user or filename to write.

@@ -1,0 +1,14 @@
+# Evita subir dados de autenticação e relatórios
+auth_info/
+mensagens_analise/
+relatorio_template.txt
+
+# Node.js
+node_modules/
+.env
+npm-debug.log
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
